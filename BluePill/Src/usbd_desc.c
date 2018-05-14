@@ -47,14 +47,30 @@
 #include "usbd_desc.h"
 #include "usbd_conf.h"
 
-#define USBD_VID                      1155
-#define USBD_LANGID_STRING            1033
-#define USBD_MANUFACTURER_STRING      "STMicroelectronics"
-#define USBD_PID_FS                   22336
-#define USBD_PRODUCT_STRING_FS        "STM32 CMSIS-DAP"
-#define USBD_SERIALNUMBER_STRING_FS   "00000000001A"
-#define USBD_CONFIGURATION_STRING_FS  "CMSIS-DAP Config"
-#define USBD_INTERFACE_STRING_FS      "CMSIS-DAP Interface"
+
+#define MBED
+
+#ifdef MBED
+	#define USBD_VID                      0x0D28
+	#define USBD_LANGID_STRING            0x409
+	#define USBD_MANUFACTURER_STRING      "STMicroelectronics"
+	#define USBD_PID_FS                   0x0204
+	#define USBD_PRODUCT_STRING_FS        "STM32 CMSIS-DAP"
+	#define USBD_SERIALNUMBER_STRING_FS   "00000000001A"
+	#define USBD_CONFIGURATION_STRING_FS  "CMSIS-DAP Config"
+	#define USBD_INTERFACE_STRING_FS      "CMSIS-DAP Interface"
+
+#else
+
+	#define USBD_VID                      0x483
+	#define USBD_LANGID_STRING            0x409
+	#define USBD_MANUFACTURER_STRING      "STMicroelectronics"
+	#define USBD_PID_FS                   0x5740
+	#define USBD_PRODUCT_STRING_FS        "STM32 CMSIS-DAP"
+	#define USBD_SERIALNUMBER_STRING_FS   "00000000001A"
+	#define USBD_CONFIGURATION_STRING_FS  "CMSIS-DAP Config"
+	#define USBD_INTERFACE_STRING_FS      "CMSIS-DAP Interface"
+#endif
 
 uint8_t *     USBD_FS_DeviceDescriptor( USBD_SpeedTypeDef speed , uint16_t *length);
 uint8_t *     USBD_FS_LangIDStrDescriptor( USBD_SpeedTypeDef speed , uint16_t *length);
@@ -86,9 +102,15 @@ __ALIGN_BEGIN uint8_t USBD_FS_DeviceDesc[USB_LEN_DEV_DESC] __ALIGN_END =
     USB_DESC_TYPE_DEVICE,       /*bDescriptorType*/
     0x00,                       /* bcdUSB */  
     0x02,
+#ifdef MBED
+    0xEF,                       /*bDeviceClass*/
+    0x02,                       /*bDeviceSubClass*/
+    0x01,                       /*bDeviceProtocol*/
+#else
     0x02,                       /*bDeviceClass*/
     0x02,                       /*bDeviceSubClass*/
     0x00,                       /*bDeviceProtocol*/
+#endif
     USB_MAX_EP0_SIZE,           /*bMaxPacketSize*/
     LOBYTE(USBD_VID),           /*idVendor*/
     HIBYTE(USBD_VID),           /*idVendor*/
@@ -149,7 +171,7 @@ uint8_t *  USBD_FS_LangIDStrDescriptor( USBD_SpeedTypeDef speed , uint16_t *leng
 */
 uint8_t *  USBD_FS_ProductStrDescriptor( USBD_SpeedTypeDef speed , uint16_t *length)
 {
-  USBD_GetString (USBD_PRODUCT_STRING_FS, USBD_StrDesc, length);    
+  USBD_GetString ((uint8_t*)USBD_PRODUCT_STRING_FS, USBD_StrDesc, length);
   return USBD_StrDesc;
 }
 
@@ -162,7 +184,7 @@ uint8_t *  USBD_FS_ProductStrDescriptor( USBD_SpeedTypeDef speed , uint16_t *len
 */
 uint8_t *  USBD_FS_ManufacturerStrDescriptor( USBD_SpeedTypeDef speed , uint16_t *length)
 {
-  USBD_GetString (USBD_MANUFACTURER_STRING, USBD_StrDesc, length);
+  USBD_GetString ((uint8_t*)USBD_MANUFACTURER_STRING, USBD_StrDesc, length);
   return USBD_StrDesc;
 }
 
@@ -175,7 +197,7 @@ uint8_t *  USBD_FS_ManufacturerStrDescriptor( USBD_SpeedTypeDef speed , uint16_t
 */
 uint8_t *  USBD_FS_SerialStrDescriptor( USBD_SpeedTypeDef speed , uint16_t *length)
 {
-  USBD_GetString (USBD_SERIALNUMBER_STRING_FS, USBD_StrDesc, length);
+  USBD_GetString ((uint8_t*)USBD_SERIALNUMBER_STRING_FS, USBD_StrDesc, length);
   return USBD_StrDesc;
 }
 
@@ -188,7 +210,7 @@ uint8_t *  USBD_FS_SerialStrDescriptor( USBD_SpeedTypeDef speed , uint16_t *leng
 */
 uint8_t *  USBD_FS_ConfigStrDescriptor( USBD_SpeedTypeDef speed , uint16_t *length)
 {
-  USBD_GetString (USBD_CONFIGURATION_STRING_FS, USBD_StrDesc, length); 
+  USBD_GetString ((uint8_t*)USBD_CONFIGURATION_STRING_FS, USBD_StrDesc, length);
   return USBD_StrDesc;  
 }
 
@@ -201,7 +223,7 @@ uint8_t *  USBD_FS_ConfigStrDescriptor( USBD_SpeedTypeDef speed , uint16_t *leng
 */
 uint8_t *  USBD_FS_InterfaceStrDescriptor( USBD_SpeedTypeDef speed , uint16_t *length)
 {
-  USBD_GetString (USBD_INTERFACE_STRING_FS, USBD_StrDesc, length);
+  USBD_GetString ((uint8_t*)USBD_INTERFACE_STRING_FS, USBD_StrDesc, length);
   return USBD_StrDesc;  
 }
 
