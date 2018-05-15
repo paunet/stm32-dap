@@ -73,6 +73,16 @@ static void MX_USART2_UART_Init(void);
 extern void HAL_UART2_TxCpltCallback();
 extern void HAL_TIM4_PeriodElapsedCallback();
 
+
+
+/**
+ * DOCs:
+ * - http://kevincuzner.com/2018/01/29/bare-metal-stm32-writing-a-usb-driver/
+ * -
+ *
+ */
+
+
 int main(void)
 {
   /* MCU Configuration----------------------------------------------------------*/

@@ -5,16 +5,30 @@
 /* Includes ------------------------------------------------------------------*/
 #include  "usbd_ioreq.h"
 
+#define ENABLE_DUAL_CDC				  1
+
+#if ENABLE_DUAL_CDC
+#define USB_DAP_CDC_CONFIG_DESC_SIZ   130
+/* DAP + CDC(IA) : 107 */
+/* DAP:41 */
+/* CDC:67 */
+#else
 #define USB_DAP_CDC_CONFIG_DESC_SIZ   107
 /* DAP + CDC(IA) : 107 */
 /* DAP:41 */
 /* CDC:67 */
+#endif
 
 #define DAP_EPIN_ADDR                 0x81  /* EP1 for data IN */
 #define DAP_EPOUT_ADDR                0x01  /* EP1 for data OUT */
 #define CDC_IN_EP                     0x82  /* EP2 for data IN */
 #define CDC_OUT_EP                    0x02  /* EP2 for data OUT */
 #define CDC_CMD_EP                    0x83  /* EP3 for CDC commands */
+#if ENABLE_DUAL_CDC
+#define DIAG_IN_EP                    0x84  /* EP4 for data IN */
+#define DIAG_OUT_EP                   0x04  /* EP4 for data OUT */
+#endif
+
 
 #define DAP_EPIN_SIZE                 0x40
 #define DAP_EPOUT_SIZE                0x40

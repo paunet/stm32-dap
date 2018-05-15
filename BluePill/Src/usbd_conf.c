@@ -265,6 +265,10 @@ USBD_StatusTypeDef  USBD_LL_Init (USBD_HandleTypeDef *pdev)
   HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData , 0x02 , PCD_SNG_BUF, 0x120);  /* EP2 for data OUT */
   HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData , 0x82 , PCD_SNG_BUF, 0x160);  /* EP2 for data IN */
   HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData , 0x83 , PCD_SNG_BUF, 0x1A0);  /* EP3 for data IN */
+#if ENABLE_DUAL_CDC
+  HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData , 0x84 , PCD_SNG_BUF, 0x1E0);  /* EP4 for data IN */
+  HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData , 0x04 , PCD_SNG_BUF, 0x220);  /* EP4 for data OUT */
+#endif
   return USBD_OK;
 }
 

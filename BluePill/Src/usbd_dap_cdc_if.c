@@ -167,7 +167,7 @@ static int8_t DAP_OutEvent  (uint8_t* request)
   memset(SendBuffer, 0, 64);
 
   length = DAP_ProcessCommand(request, SendBuffer);
-  
+  UNUSED(length);
   USBD_DAP_SendReport(&hUsbDeviceFS, SendBuffer, 64);
 
   return (0);

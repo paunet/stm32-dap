@@ -43,7 +43,11 @@ static uint8_t USBD_DAP_CDC_CfgDesc[USB_DAP_CDC_CONFIG_DESC_SIZ] =
   USB_DESC_TYPE_CONFIGURATION,   /* bDescriptorType: Configuration */
   USB_DAP_CDC_CONFIG_DESC_SIZ,   /* wTotalLength: Bytes returned */
   0x00,
+#if ENABLE_DUAL_CDC
+  0x04,         /*bNumInterfaces: CDC:2 HID:1 interface*/
+#else
   0x03,         /*bNumInterfaces: CDC:2 HID:1 interface*/
+#endif
   0x01,         /*bConfigurationValue: Configuration value*/
   0x04,         /*iConfiguration: Index of string descriptor describing the configuration*/
   0xC0,         /*bmAttributes: bus powered */
@@ -153,49 +157,85 @@ static uint8_t USBD_DAP_CDC_CfgDesc[USB_DAP_CDC_CONFIG_DESC_SIZ] =
   /* 77 */
   
   /*Endpoint Descriptor*/
-  0x07,                           /* bLength: Endpoint Descriptor size */
-  USB_DESC_TYPE_ENDPOINT,   /* bDescriptorType: Endpoint */
-  CDC_CMD_EP,                     /* bEndpointAddress */
-  0x03,                           /* bmAttributes: Interrupt */
-  LOBYTE(CDC_CMD_PACKET_SIZE),     /* wMaxPacketSize: */
+  0x07,                   			/* bLength:         Endpoint  Descriptor size */
+  USB_DESC_TYPE_ENDPOINT, 			/* bDescriptorType: Endpoint  */
+  CDC_CMD_EP,             			/* bEndpointAddress */
+  0x03,                   			/* bmAttributes:    Interrupt */
+  LOBYTE(CDC_CMD_PACKET_SIZE),    	/* wMaxPacketSize: */
   HIBYTE(CDC_CMD_PACKET_SIZE),
-  0x10,                           /* bInterval: */ 
+  0x10,                   			/* bInterval:       */
   /* 84 */
 
   /*---------------------------------------------------------------------------*/
   
   /*Data class interface descriptor*/
-  0x09,   /* bLength: Endpoint Descriptor size */
-  USB_DESC_TYPE_INTERFACE,  /* bDescriptorType: */
-  0x02,   /* bInterfaceNumber: Number of Interface */
-  0x00,   /* bAlternateSetting: Alternate setting */
-  0x02,   /* bNumEndpoints: Two endpoints used */
-  0x0A,   /* bInterfaceClass: CDC */
-  0x00,   /* bInterfaceSubClass: */
-  0x00,   /* bInterfaceProtocol: */
-  0x00,   /* iInterface: */
+  0x09,                    /* bLength:            Endpoint  Descriptor size      */
+  USB_DESC_TYPE_INTERFACE, /* bDescriptorType:    */
+  0x02,                    /* bInterfaceNumber:   Number    of         Interface */
+  0x00,                    /* bAlternateSetting:  Alternate setting    */
+  0x02,                    /* bNumEndpoints:      Two       endpoints  used      */
+  0x0A,                    /* bInterfaceClass:    CDC       */
+  0x00,                    /* bInterfaceSubClass: */
+  0x00,                    /* bInterfaceProtocol: */
+  0x00,                    /* iInterface:         */
   /* 93 */
   
   /*Endpoint OUT Descriptor*/
-  0x07,   /* bLength: Endpoint Descriptor size */
-  USB_DESC_TYPE_ENDPOINT,      /* bDescriptorType: Endpoint */
-  CDC_OUT_EP,                        /* bEndpointAddress */
-  0x02,                              /* bmAttributes: Bulk */
+  0x07,                   /* bLength:         Endpoint Descriptor size */
+  USB_DESC_TYPE_ENDPOINT, /* bDescriptorType: Endpoint */
+  CDC_OUT_EP,             /* bEndpointAddress */
+  0x02,                   /* bmAttributes:    Bulk     */
   LOBYTE(CDC_DATA_FS_MAX_PACKET_SIZE),  /* wMaxPacketSize: */
   HIBYTE(CDC_DATA_FS_MAX_PACKET_SIZE),
-  0x00,                              /* bInterval: ignore for Bulk transfer */
+  0x00,                         /* bInterval: ignore for Bulk transfer */
   /* 100 */
   
   /*Endpoint IN Descriptor*/
-  0x07,   /* bLength: Endpoint Descriptor size */
-  USB_DESC_TYPE_ENDPOINT,      /* bDescriptorType: Endpoint */
-  CDC_IN_EP,                         /* bEndpointAddress */
-  0x02,                              /* bmAttributes: Bulk */
+  0x07,                   /* bLength:         Endpoint Descriptor size */
+  USB_DESC_TYPE_ENDPOINT, /* bDescriptorType: Endpoint */
+  CDC_IN_EP,              /* bEndpointAddress */
+  0x02,                   /* bmAttributes:    Bulk     */
   LOBYTE(CDC_DATA_FS_MAX_PACKET_SIZE),  /* wMaxPacketSize: */
   HIBYTE(CDC_DATA_FS_MAX_PACKET_SIZE),
-  0x00,                              /* bInterval: ignore for Bulk transfer */
+  0x00,                          /* bInterval: ignore for Bulk transfer */
   /* 107 */
 #endif
+
+#if ENABLE_DUAL_CDC
+  /*Data class interface descriptor*/
+  0x09,                    /* bLength:            Endpoint  Descriptor size      */
+  USB_DESC_TYPE_INTERFACE, /* bDescriptorType:    */
+  0x03,                    /* bInterfaceNumber:   Number    of         Interface */
+  0x00,                    /* bAlternateSetting:  Alternate setting    */
+  0x02,                    /* bNumEndpoints:      Two       endpoints  used      */
+  0x0A,                    /* bInterfaceClass:    CDC       */
+  0x00,                    /* bInterfaceSubClass: */
+  0x00,                    /* bInterfaceProtocol: */
+  0x00,                    /* iInterface:         */
+  /* 116 */
+
+  /*Endpoint OUT Descriptor*/
+  0x07,                   /* bLength:         Endpoint Descriptor size */
+  USB_DESC_TYPE_ENDPOINT, /* bDescriptorType: Endpoint */
+  DIAG_OUT_EP,            /* bEndpointAddress */
+  0x02,                   /* bmAttributes:    Bulk     */
+  LOBYTE(CDC_DATA_FS_MAX_PACKET_SIZE),  /* wMaxPacketSize: */
+  HIBYTE(CDC_DATA_FS_MAX_PACKET_SIZE),
+  0x00,                         /* bInterval: ignore for Bulk transfer */
+  /* 123 */
+
+  /*Endpoint IN Descriptor*/
+  0x07,                   /* bLength:         Endpoint Descriptor size */
+  USB_DESC_TYPE_ENDPOINT, /* bDescriptorType: Endpoint */
+  DIAG_IN_EP,             /* bEndpointAddress */
+  0x02,                   /* bmAttributes:    Bulk     */
+  LOBYTE(CDC_DATA_FS_MAX_PACKET_SIZE),  /* wMaxPacketSize: */
+  HIBYTE(CDC_DATA_FS_MAX_PACKET_SIZE),
+  0x00,                          /* bInterval: ignore for Bulk transfer */
+  /* 130 */
+#endif
+
+
 } ;
 
 /* USB DAP device Configuration Descriptor */
@@ -249,6 +289,20 @@ static uint8_t USBD_DAP_CDC_Init (USBD_HandleTypeDef *pdev, uint8_t cfgidx)
                  CDC_CMD_EP,
                  USBD_EP_TYPE_INTR,
                  CDC_CMD_PACKET_SIZE);
+
+#if ENABLE_DUAL_CDC
+  /* Open DIAG_IN_EP */
+   USBD_LL_OpenEP(pdev,
+		   	   	 DIAG_IN_EP,
+                 USBD_EP_TYPE_BULK,
+                 CDC_DATA_FS_IN_PACKET_SIZE);
+
+  /* Open DIAG_OUT_EP */
+  USBD_LL_OpenEP(pdev,
+		  	  	 DIAG_OUT_EP,
+                 USBD_EP_TYPE_BULK,
+                 CDC_DATA_FS_OUT_PACKET_SIZE);
+#endif
   
   hdapcdc.state = DAP_IDLE;
 
@@ -454,8 +508,11 @@ static uint8_t USBD_DAP_CDC_Setup (USBD_HandleTypeDef *pdev,
     case USB_REQ_SET_INTERFACE :
       hdapcdc.AltSetting = (uint8_t)(req->wValue);
       break;
+
+    default:
+	  break;
     }
- 
+    /* no break */
   default: 
     break;
   }
