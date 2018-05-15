@@ -203,15 +203,15 @@ static uint8_t USBD_DAP_CDC_CfgDesc[USB_DAP_CDC_CONFIG_DESC_SIZ] =
 
 #if ENABLE_DUAL_CDC
   /*Data class interface descriptor*/
-  0x09,                    /* bLength:            Endpoint  Descriptor size      */
-  USB_DESC_TYPE_INTERFACE, /* bDescriptorType:    */
-  0x03,                    /* bInterfaceNumber:   Number    of         Interface */
-  0x00,                    /* bAlternateSetting:  Alternate setting    */
-  0x02,                    /* bNumEndpoints:      Two       endpoints  used      */
-  0x0A,                    /* bInterfaceClass:    CDC       */
-  0x00,                    /* bInterfaceSubClass: */
-  0x00,                    /* bInterfaceProtocol: */
-  0x00,                    /* iInterface:         */
+  0x09,                    /* bLength:            Endpoint Descriptor size 	*/
+  USB_DESC_TYPE_INTERFACE, /* bDescriptorType:    							*/
+  0x03,                    /* bInterfaceNumber:   Number of Interface 		*/
+  0x00,                    /* bAlternateSetting:  Alternate setting    		*/
+  0x02,                    /* bNumEndpoints:      Two endpoints used   		*/
+  0x02,                    /* bInterfaceClass:    CDC 						*/
+  0x02,                    /* bInterfaceSubClass: 							*/
+  0x02,                    /* bInterfaceProtocol: 							*/
+  0x00,                    /* iInterface:         							*/
   /* 116 */
 
   /*Endpoint OUT Descriptor*/
