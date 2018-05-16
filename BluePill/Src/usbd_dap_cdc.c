@@ -52,7 +52,8 @@ static uint8_t USBD_DAP_CDC_CfgDesc[USB_DAP_CDC_CONFIG_DESC_SIZ] =
 	#endif
 	0x01,         /*bConfigurationValue: Configuration value*/
 	0x04,         /*iConfiguration: Index of string descriptor describing the configuration*/
-	0xC0,         /*bmAttributes: bus powered */
+	// 0xC0,         /*bmAttributes: bus powered */
+  0x80,         /*bmAttributes: bus powered */
 	0x32,         /*MaxPower 100 mA: this current is used for detecting Vbus*/
 	/* 09 */
 
