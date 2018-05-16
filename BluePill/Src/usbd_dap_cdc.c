@@ -180,8 +180,8 @@ static uint8_t USBD_DAP_CDC_CfgDesc[USB_DAP_CDC_CONFIG_DESC_SIZ] =
 	0x02,                    /* bInterfaceNumber:   Number    of         Interface */
 	0x00,                    /* bAlternateSetting:  Alternate setting    */
 	0x02,                    /* bNumEndpoints:      Two       endpoints  used      */
-	0x0A,                    /* bInterfaceClass:    CDC       */
-	0x00,                    /* bInterfaceSubClass: */
+	0x02,                    /* bInterfaceClass:    CDC       */
+	0x02,                    /* bInterfaceSubClass: */
 	0x00,                    /* bInterfaceProtocol: */
 	0x00,                    /* iInterface:         */
 	/* 93 */
