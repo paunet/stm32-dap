@@ -5,10 +5,10 @@
 /* Includes ------------------------------------------------------------------*/
 #include  "usbd_ioreq.h"
 
-#define ENABLE_DUAL_CDC				  1
+#define ENABLE_DUAL_CDC				  0
 
 #if ENABLE_DUAL_CDC
-#define USB_DAP_CDC_CONFIG_DESC_SIZ   181
+#define USB_DAP_CDC_CONFIG_DESC_SIZ   173
 /* DAP + CDC(IA) : 107 */
 /* DAP:41 */
 /* CDC:67 */
