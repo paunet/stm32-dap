@@ -8,7 +8,7 @@
 #define ENABLE_DUAL_CDC				  1
 
 #if ENABLE_DUAL_CDC
-#define USB_DAP_CDC_CONFIG_DESC_SIZ   130
+#define USB_DAP_CDC_CONFIG_DESC_SIZ   181
 /* DAP + CDC(IA) : 107 */
 /* DAP:41 */
 /* CDC:67 */
@@ -24,9 +24,12 @@
 #define CDC_IN_EP                     0x82  /* EP2 for data IN */
 #define CDC_OUT_EP                    0x02  /* EP2 for data OUT */
 #define CDC_CMD_EP                    0x83  /* EP3 for CDC commands */
+
 #if ENABLE_DUAL_CDC
+
 #define DIAG_IN_EP                    0x84  /* EP4 for data IN */
 #define DIAG_OUT_EP                   0x04  /* EP4 for data OUT */
+#define DIAG_CMD_EP                   0x85  /* EP5 for CDC commands */
 #endif
 
 

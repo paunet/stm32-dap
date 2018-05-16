@@ -105,7 +105,10 @@ int main(void)
   /* Infinite loop */
   while (1)
   {
-
+//	    uint8_t HiMsg[] = "hello\r\n";
+//	    USBD_CDC_TransmitPacket(HiMsg, strlen(HiMsg));
+//	    HAL_Delay(200);
+//	    HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
   }
 
 }

@@ -44,7 +44,10 @@ static uint8_t USBD_DAP_CDC_CfgDesc[USB_DAP_CDC_CONFIG_DESC_SIZ] =
   USB_DAP_CDC_CONFIG_DESC_SIZ,   /* wTotalLength: Bytes returned */
   0x00,
 #if ENABLE_DUAL_CDC
-  0x04,         /*bNumInterfaces: CDC:2 HID:1 interface*/
+//http://www.st.com/content/ccc/resource/technical/document/user_manual/99/6b/a7/ec/2a/4b/4b/47/DM00104543.pdf/files/DM00104543.pdf/jcr:content/translations/en.DM00104543.pdf
+
+  //https://stackoverflow.com/questions/40111089/stm32-dual-cdcvcp-class
+  0x05,         /*bNumInterfaces: CDC:2+2 HID:1 interface*/
 #else
   0x03,         /*bNumInterfaces: CDC:2 HID:1 interface*/
 #endif
@@ -53,7 +56,19 @@ static uint8_t USBD_DAP_CDC_CfgDesc[USB_DAP_CDC_CONFIG_DESC_SIZ] =
   0xC0,         /*bmAttributes: bus powered */
   0x32,         /*MaxPower 100 mA: this current is used for detecting Vbus*/
   /* 09 */
+  //////////////////////////////////////////////////////////////////////////////////////
+  //Add 1 IAD class here // this one is for COM port
 
+    0x08,          /* bLength: InterfaceAssociation Descriptor size */
+    0x0B,          /* bDescriptorType: Interface Assocation */
+    0x00,          /* bFirstInterface */
+    0x01,          /* bInterfaceCount */
+    0x03,          /* bInterfaceClass: Communication Interface Class */
+    0x00,          /* bInterfaceSubClass: Abstract Control Model */
+    0x00,          /* bInterfaceProtocol: Common AT commands */
+    0x02,          /* iInterface: */
+
+  //////////////////////////////////////////////////////////////////////////////////////
 #if 1
   /************** Descriptor of DAP(HID) interface ****************/
   0x09,         /*bLength: Interface Descriptor size*/
@@ -101,7 +116,10 @@ static uint8_t USBD_DAP_CDC_CfgDesc[USB_DAP_CDC_CONFIG_DESC_SIZ] =
 #endif
 
 #if 1
-  /******************** Descriptor of Interface Association ********************/
+
+//////////////////////////////////////////////////////////////////////////////////////
+//Add 1 IAD class here // this one is for COM port
+
   0x08,          /* bLength: InterfaceAssociation Descriptor size */
   0x0B,          /* bDescriptorType: Interface Assocation */
   0x01,          /* bFirstInterface */
@@ -110,6 +128,9 @@ static uint8_t USBD_DAP_CDC_CfgDesc[USB_DAP_CDC_CONFIG_DESC_SIZ] =
   0x02,          /* bInterfaceSubClass: Abstract Control Model */
   0x01,          /* bInterfaceProtocol: Common AT commands */
   0x00,          /* iInterface: */
+
+//////////////////////////////////////////////////////////////////////////////////////
+
   /* 49 */
 
   /*Interface Descriptor */
@@ -202,15 +223,84 @@ static uint8_t USBD_DAP_CDC_CfgDesc[USB_DAP_CDC_CONFIG_DESC_SIZ] =
 #endif
 
 #if ENABLE_DUAL_CDC
+
+  //////////////////////////////////////////////////////////////////////////////////////
+  //Add 1 IAD class here // this one is for COM port
+
+    0x08,          /* bLength: InterfaceAssociation Descriptor size */
+    0x0B,          /* bDescriptorType: Interface Assocation */
+    0x03,          /* bFirstInterface */
+    0x02,          /* bInterfaceCount */
+    0x02,          /* bInterfaceClass: Communication Interface Class */
+    0x02,          /* bInterfaceSubClass: Abstract Control Model */
+    0x01,          /* bInterfaceProtocol: Common AT commands */
+    0x00,          /* iInterface: */
+
+  //////////////////////////////////////////////////////////////////////////////////////
+
+	  /*Interface Descriptor */
+	  0x09,   /* bLength: Interface Descriptor size */
+	  USB_DESC_TYPE_INTERFACE,  /* bDescriptorType: Interface */
+	  /* Interface descriptor type */
+	  0x01,   /* bInterfaceNumber: Number of Interface */
+	  0x00,   /* bAlternateSetting: Alternate setting */
+	  0x01,   /* bNumEndpoints: One endpoints used */
+	  0x02,   /* bInterfaceClass: Communication Interface Class */
+	  0x02,   /* bInterfaceSubClass: Abstract Control Model */
+	  0x01,   /* bInterfaceProtocol: Common AT commands */
+	  0x00,   /* iInterface: */
+	  /* 9 */
+
+	  /*Header Functional Descriptor*/
+	  0x05,   /* bLength: Endpoint Descriptor size */
+	  0x24,   /* bDescriptorType: CS_INTERFACE */
+	  0x00,   /* bDescriptorSubtype: Header Func Desc */
+	  0x10,   /* bcdCDC: spec release number */
+	  0x01,
+	  /* 14 */
+
+	  /*Call Management Functional Descriptor*/
+	  0x05,   /* bFunctionLength */
+	  0x24,   /* bDescriptorType: CS_INTERFACE */
+	  0x01,   /* bDescriptorSubtype: Call Management Func Desc */
+	  0x00,   /* bmCapabilities: D0+D1 */
+	  0x02,   /* bDataInterface: 1 */
+	  /* 19 */
+
+	  /*ACM Functional Descriptor*/
+	  0x04,   /* bFunctionLength */
+	  0x24,   /* bDescriptorType: CS_INTERFACE */
+	  0x02,   /* bDescriptorSubtype: Abstract Control Management desc */
+	  0x02,   /* bmCapabilities */
+	  /* 23 */
+
+	  /*Union Functional Descriptor*/
+	  0x05,   /* bFunctionLength */
+	  0x24,   /* bDescriptorType: CS_INTERFACE */
+	  0x06,   /* bDescriptorSubtype: Union func desc */
+	  0x01,   /* bMasterInterface: Communication class interface */
+	  0x02,   /* bSlaveInterface0: Data Class Interface */
+	  /* 28 */
+
+	  /*Endpoint Descriptor*/
+	  0x07,                   			/* bLength:         Endpoint  Descriptor size */
+	  USB_DESC_TYPE_ENDPOINT, 			/* bDescriptorType: Endpoint  */
+	  DIAG_CMD_EP,             			/* bEndpointAddress */
+	  0x03,                   			/* bmAttributes:    Interrupt */
+	  LOBYTE(CDC_CMD_PACKET_SIZE),    	/* wMaxPacketSize: */
+	  HIBYTE(CDC_CMD_PACKET_SIZE),
+	  0x10,                   			/* bInterval:       */
+	  /* 35 */
+
   /*Data class interface descriptor*/
   0x09,                    /* bLength:            Endpoint Descriptor size 	*/
   USB_DESC_TYPE_INTERFACE, /* bDescriptorType:    							*/
   0x03,                    /* bInterfaceNumber:   Number of Interface 		*/
   0x00,                    /* bAlternateSetting:  Alternate setting    		*/
   0x02,                    /* bNumEndpoints:      Two endpoints used   		*/
-  0x02,                    /* bInterfaceClass:    CDC 						*/
-  0x02,                    /* bInterfaceSubClass: 							*/
-  0x02,                    /* bInterfaceProtocol: 							*/
+  0x0A,                    /* bInterfaceClass:    CDC 						*/
+  0x00,                    /* bInterfaceSubClass: 							*/
+  0x00,                    /* bInterfaceProtocol: 							*/
   0x00,                    /* iInterface:         							*/
   /* 116 */
 
@@ -302,6 +392,12 @@ static uint8_t USBD_DAP_CDC_Init (USBD_HandleTypeDef *pdev, uint8_t cfgidx)
 		  	  	 DIAG_OUT_EP,
                  USBD_EP_TYPE_BULK,
                  CDC_DATA_FS_OUT_PACKET_SIZE);
+
+  /* Open Command IN EP */
+  USBD_LL_OpenEP(pdev,
+                 DIAG_CMD_EP,
+                 USBD_EP_TYPE_INTR,
+                 CDC_CMD_PACKET_SIZE);
 #endif
   
   hdapcdc.state = DAP_IDLE;
@@ -318,6 +414,10 @@ static uint8_t USBD_DAP_CDC_Init (USBD_HandleTypeDef *pdev, uint8_t cfgidx)
 
   USBD_LL_PrepareReceive(pdev, CDC_OUT_EP, hdapcdc.RxBuffer,
                          CDC_DATA_FS_OUT_PACKET_SIZE);
+
+  USBD_LL_PrepareReceive(pdev, DIAG_OUT_EP, hdapcdc.RxBuffer,
+                         CDC_DATA_FS_OUT_PACKET_SIZE);
+
 
   return USBD_OK;
 }
@@ -341,15 +441,30 @@ static uint8_t USBD_DAP_CDC_DeInit (USBD_HandleTypeDef *pdev, uint8_t cfgidx)
 
   /* Close EP IN */
   USBD_LL_CloseEP(pdev,
-              CDC_IN_EP);
+		  	  	  CDC_IN_EP);
   
   /* Close EP OUT */
   USBD_LL_CloseEP(pdev,
-              CDC_OUT_EP);
+              	  CDC_OUT_EP);
   
   /* Close Command IN EP */
   USBD_LL_CloseEP(pdev,
-              CDC_CMD_EP);
+              	  CDC_CMD_EP);
+
+#if ENABLE_DUAL_CDC
+  /* Open DIAG_IN_EP */
+  /* Close DIAG_IN_EP */
+  USBD_LL_CloseEP(pdev,
+		  	  	  DIAG_IN_EP);
+
+  /* Close Command IN DIAG_OUT_EP */
+  USBD_LL_CloseEP(pdev,
+		  	  	  DIAG_OUT_EP);
+
+  /* Close Command IN EP */
+  USBD_LL_CloseEP(pdev,
+              	  DIAG_CMD_EP);
+#endif
 
   /* DeInit  physical Interface components */
   ((USBD_DAP_CDC_ItfTypeDef*)pdev->pUserData)->DeInit();
@@ -468,7 +583,11 @@ static uint8_t USBD_DAP_CDC_Setup (USBD_HandleTypeDef *pdev,
           return USBD_DAP_Setup(pdev, req);
         }
         else
+#if ENABLE_DUAL_CDC
+        if (req->wIndex <= 5) {
+#else
         if (req->wIndex <= 2) {
+#endif
           return USBD_CDC_Setup(pdev, req);
         }
         break;
@@ -531,13 +650,14 @@ static uint8_t  USBD_DAP_CDC_DataIn (USBD_HandleTypeDef *pdev,
 {
   switch (epnum) {
     case 1:
+    case 3:
       /* Ensure that the FIFO is empty before a new transfer, this condition could 
          be caused by  a new transfer before the end of the previous transfer */
       hdapcdc.state = DAP_IDLE;
       return USBD_OK;
 
     case 2:
-    case 3:
+    case 4:
       hdapcdc.TxState = 0;
       return USBD_OK;
 
@@ -560,13 +680,14 @@ static uint8_t  USBD_DAP_CDC_DataOut (USBD_HandleTypeDef *pdev,
 {
   switch (epnum) {
     case 1:
+    case 3:
       ((USBD_DAP_CDC_ItfTypeDef*)pdev->pUserData)->OutEvent(hdapcdc.Report_buf);
       USBD_LL_PrepareReceive(pdev, DAP_EPOUT_ADDR , hdapcdc.Report_buf, 
                              USBD_DAP_OUTREPORT_BUF_SIZE);
       return USBD_OK;
 
     case 2:
-    case 3:
+    case 4:
       /* Get the received data length */
       hdapcdc.RxLength = USBD_LL_GetRxDataSize (pdev, epnum);
   
@@ -700,6 +821,12 @@ uint8_t  USBD_CDC_TransmitPacket(USBD_HandleTypeDef *pdev)
                      hdapcdc.TxBuffer,
                      hdapcdc.TxLength);
     
+    /* Transmit next packet */
+    USBD_LL_Transmit(pdev,
+                     DIAG_IN_EP,
+                     hdapcdc.TxBuffer,
+                     hdapcdc.TxLength);
+
     return USBD_OK;
   }
   else
@@ -724,6 +851,11 @@ uint8_t  USBD_CDC_ReceivePacket(USBD_HandleTypeDef *pdev)
                          hdapcdc.RxBuffer,
                          CDC_DATA_FS_OUT_PACKET_SIZE);
   
+  USBD_LL_PrepareReceive(pdev,
+                         DIAG_OUT_EP,
+                         hdapcdc.RxBuffer,
+                         CDC_DATA_FS_OUT_PACKET_SIZE);
+
   return USBD_OK;
 }
 
